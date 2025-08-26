@@ -8,6 +8,7 @@ type Product = {
   name: string;
   description: string;
   price: number;
+  imageUrl: string;
 
 };
 
@@ -50,6 +51,7 @@ export default function ProductsPage() {
             key={product.id}
             className="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-6 flex flex-col"
           >
+            <img src={product.imageUrl} alt="" />
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
               {product.name}
             </h2>
