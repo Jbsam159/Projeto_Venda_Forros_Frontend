@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useCart } from "../Context/CartContext";
 import api from "../../service/api"
 
 type Product = {
@@ -13,6 +14,9 @@ type Product = {
 };
 
 export default function ProductsPage() {
+
+  const {handleAdd} = useCart()
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,8 +63,8 @@ export default function ProductsPage() {
             <span className="text-lg font-bold text-green-600 mb-4">
               R$ {(product.price)}
             </span>
-            <button className="mt-auto w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-medium transition">
-              Comprar
+            <button onClick={()=> handleAdd(product.id)} className="mt-auto w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-medium transition">
+              Adicionar ao Carrinho
             </button>
           </div>
         ))}
