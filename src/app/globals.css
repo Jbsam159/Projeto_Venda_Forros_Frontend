@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+:root{
+
+  --primary-color: #ECFAE5;
+  --secondery-color:#DDF6D2;
+  --tertiary-color:#CAE8BD;
+  --quartiary-color: #B0DB9C;
+
+}
+
+body{
+
+  background-color: var(--primary-color);
+
+}
+
+/*NavbarComponenet*/
+.navbar{
+
+  background-color: var(--quartiary-color);
+
+}
+
+/*_____Home_____*/
+
+.about{
+
+  background-color: var(--tertiary-color);
+
+}
+
+/*CTA*/
+.cta{
+  background-color: var(--quartiary-color);
+}
+
+.cta-a{
+
+  background-color: var(--primary-color);
+
+}
+
+.cta-a:hover{
+
+  background-color: var(--tertiary-color);
+  transition: 0.3s;
+
+}
+
+/*_____FooterComponent_____*/
+.bg-footer{
+
+  background-color: var(--quartiary-color);
+
+}

@@ -10,6 +10,7 @@ type Product = {
   description: string;
   price: number;
   imageUrl: string;
+  stock: number
 
 };
 
@@ -60,6 +61,7 @@ export default function ProductsPage() {
               {product.name}
             </h2>
             <p className="text-gray-600 mb-4">{product.description}</p>
+            <p className="text-gray-600 mb-4">{product.stock}</p>
             <span className="text-lg font-bold text-green-600 mb-4">
               R$ {(product.price)}
             </span>
