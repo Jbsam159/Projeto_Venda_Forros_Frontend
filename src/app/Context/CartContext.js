@@ -36,7 +36,7 @@ export function CartProvider({ children }) {
     fetchCart();
   };
   return (
-    <CartContext.Provider value={{ cart, handleAdd, handleUpdate, handleRemove }}>
+    <CartContext.Provider value={{ cart, fetchCart, handleAdd, handleUpdate, handleRemove }}>
       {children}
     </CartContext.Provider>
   );

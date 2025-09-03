@@ -4,6 +4,8 @@ import { useCart } from "../Context/CartContext";
 import {useState} from "react"
 import {createOrder} from "../../service/orderService"
 
+import OrderHistoryComponent from "../components/OrderHistoryComponent";
+
 interface Product {
   id: number;
   name: string;
@@ -148,7 +150,11 @@ return (
         </div>
       </>
     )}
+
+    <OrderHistoryComponent />
+
   </div>
-);
+
+  );
 
 }
