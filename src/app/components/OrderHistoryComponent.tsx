@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { useCart } from "../Context/CartContext";
 
+import { getOrderHistory, cancelOrder, reorder} from "@/service/orderService";
+
 interface Product {
   id: number;
   name: string;
@@ -31,62 +33,42 @@ interface Order {
 
 export default function OrderHistory() {
   const [orders, setOrders] = useState<Order[]>([]);
+  const { fetchCart } = useCart();
 
-  const {fetchCart} = useCart()
+  // 🔹 Agora fetchOrders pode ser chamado em qualquer lugar
+  const fetchOrders = async () => {
+    try {
+      const data = await getOrderHistory()
+      setOrders(data.orders);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
+  // 🔹 Chama no carregamento inicial
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-
-        const token = localStorage.getItem("token")
-
-        if(!token){
-          throw new Error("Token Inválido")
-        }
-
-        const res = await fetch("http://localhost:5000/orders/history", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          credentials: "include", // caso precise de cookies/session
-        });
-        if (!res.ok) throw new Error("Erro ao buscar pedidos");
-
-        const data = await res.json();
-        setOrders(data.orders); // <- Aqui pegamos o array "orders"
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
     fetchOrders();
   }, []);
 
   const handleReorder = async (orderId: number) => {
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Você precisa estar logado para recomprar!");
-      return;
+    try {
+      await reorder(orderId)
+      await fetchCart(); // 🔄 Atualiza o carrinho
+      alert("Itens adicionados ao carrinho!");
+    } catch (error) {
+      console.error("Erro ao recomprar:", error);
     }
+  };
 
-    await fetch(`http://localhost:5000/orders/${orderId}/reorder`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    await fetchCart()
-
-    alert("Itens adicionados ao carrinho!");
-  } catch (error) {
-    console.error("Erro ao recomprar:", error);
-  }
-};
+  const handleCancel = async (orderId: number) => {
+    try {
+      
+      await cancelOrder(orderId)
+      await fetchOrders(); // 🔄 atualiza lista após cancelar
+    } catch (error) {
+      console.error("Erro ao cancelar pedido:", error);
+    }
+  };
 
   return (
     <div className="p-6">
@@ -117,13 +99,20 @@ export default function OrderHistory() {
 
             <button
               onClick={() => handleReorder(order.id)}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg mt-2"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg mt-2 mr-2"
             >
               Recomprar
             </button>
 
-          </div>           
-
+            {order.status !== "cancelado" && (
+              <button
+                onClick={() => handleCancel(order.id)}
+                className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg mt-2"
+              >
+                Cancelar
+              </button>
+            )}
+          </div>
         ))
       )}
     </div>
