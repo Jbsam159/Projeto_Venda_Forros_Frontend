@@ -6,6 +6,8 @@ import {createOrder} from "../../service/orderService"
 
 import OrderHistoryComponent from "../components/OrderHistoryComponent";
 
+import {sendOrderWhatsApp} from "../utils/whatsapp"
+
 interface Product {
   id: number;
   name: string;
@@ -44,8 +46,12 @@ export default function CartPage() {
       }
 
       const data = await createOrder(token);
-      console.log("Pedido criado com sucesso:", data);
 
+      console.log("Resposta da API ao criar pedido:", data);
+
+      sendOrderWhatsApp(data.order)
+
+      console.log("Pedido criado com sucesso:", data);
       setMessage("✅ Pedido criado com sucesso!");
 
     } catch (error: any) {
