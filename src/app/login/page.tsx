@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation"
 import api from "../../service/api";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,10 +17,17 @@ const Login = () => {
     try {
       const res = await api.post("/auth/login", { email, password });
       const token = res.data.token;
-      localStorage.setItem("token", token); // Guarda o token para chamadas futuras
+      localStorage.setItem("token", token);
+      toast.success("Usuário Logado Com Sucesso") // Guarda o token para chamadas futuras
       router.push("/"); // Redireciona para home
     } catch (err: any) {
-      setError(err.response?.data?.error || "Erro ao logar");
+      let errorMessage = "❌ Ocorreu um erro ao tentar fazer login.";
+      
+      if (err.response?.status === 401) {
+        errorMessage = "⚠️ Preencha todos os campos obrigatórios.";
+      }
+
+      toast.error(errorMessage);
     }
   };
 

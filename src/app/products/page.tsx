@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useCart } from "../Context/CartContext";
 import api from "../../service/api"
+import toast from "react-hot-toast";
 
 type Product = {
   id: number;
@@ -30,7 +31,7 @@ export default function ProductsPage() {
 
         // Como já configurou baseURL em /service/api,
         // basta passar só o path da rota:
-        const res = await api.get("/products/all");
+        const res = await api.get("/products/all"); // Guarda o token para chamadas futuras
         setProducts(res.data.products); // Axios já retorna JSON no data
       }catch (err: any) {
         console.error("Erro ao carregar produtos:", err);

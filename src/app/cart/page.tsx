@@ -5,9 +5,11 @@ import {useState} from "react"
 import {createOrder} from "../../service/orderService"
 
 import OrderHistoryComponent from "../components/OrderHistoryComponent";
+import  AddressFormComponent, {Address} from "../components/AddressFormComponent";
 
 import {sendOrderWhatsApp} from "../utils/whatsapp"
 
+import toast from "react-hot-toast";
 interface Product {
   id: number;
   name: string;
@@ -27,10 +29,21 @@ export default function CartPage() {
   const { cart, handleUpdate, handleRemove, handleClear } = useCart();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [address, setAddress] = useState<Address | null>(null);
   const total = cart.reduce(
     (acc: number, item: CartItem) => acc + item.Product.price * item.quantity,
     0
   );
+
+  // Estados para endereço
+  const [cep, setCep] = useState("");
+  const [logradouro, setLogradouro] = useState("");
+  const [numero, setNumero] = useState("");
+  const [complemento, setComplemento] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [estado, setEstado] = useState("");
+
 
   const handleCheckout = async () => {
 
@@ -40,23 +53,32 @@ export default function CartPage() {
     try {
 
       const token = localStorage.getItem("token")
+
       if (!token) {
         alert("Você precisa estar logado para finalizar a compra!");
         return;
       }
 
-      const data = await createOrder(token);
+      const orderData = {
+        cep: address!.cep,
+        logradouro: address!.logradouro,
+        numero: address!.numero,
+        complemento: address!.complemento,
+        bairro: address!.bairro,
+        cidade: address!.cidade,
+        estado: address!.estado,
+      };
 
-      console.log("Resposta da API ao criar pedido:", data);
+      const data = await createOrder(token, orderData);
 
+      console.log("Resposta completa da API:", data);
+
+      toast.success("Pedido Criado Com Sucesso")
       sendOrderWhatsApp(data.order)
-
-      console.log("Pedido criado com sucesso:", data);
-      setMessage("✅ Pedido criado com sucesso!");
 
     } catch (error: any) {
 
-      setMessage(`❌ ${error.message}`);
+      toast.error(`❌ Erro ao criar pedido: ${error.message}`);
 
     }
 
@@ -141,6 +163,8 @@ return (
             <span>Total:</span>
             <span>R$ {total}</span>
           </div>
+
+          <AddressFormComponent onAddressChange={(addr: Address) => setAddress(addr)} />
 
           <button
             onClick={handleCheckout}

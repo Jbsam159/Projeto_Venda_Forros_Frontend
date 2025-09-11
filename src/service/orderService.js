@@ -13,20 +13,22 @@ axios.interceptors.request.use((config) => {
 
 })
 
-export const createOrder = async (token) =>{
+export const createOrder = async (token, orderData) =>{
 
   try {
     
+    console.log("Payload enviado para API:", orderData);
+
     const response = await axios.post(
 
       `${API_URL}/add`,
-      {},
+      orderData,
       {
         headers: {Authorization: `Bearer ${token}`}
       }
 
     )
-
+    
     return response.data
 
   } catch (error) {

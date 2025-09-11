@@ -14,6 +14,12 @@ export const sendOrderWhatsApp = (order, adminNumber = "61996364810") => {
   message += `📌 Status: ${order.status}\n`;
   message += `💰 Total: R$ ${order.total}\n\n`;
 
+  message += `📍 *Endereço de Entrega:*\n`;
+  message += `${order.logradouro}, ${order.numero}\n`;
+  if (order.complemento) message += `${order.complemento}\n`;
+  message += `${order.bairro}, ${order.cidade} - ${order.estado}\n`;
+  message += `CEP: ${order.cep}\n\n`;
+
   // itens do pedido
   if (order.OrderItems && order.OrderItems.length > 0) {
     message += `📦 Itens:\n`;
